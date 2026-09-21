@@ -2,6 +2,7 @@ package com.pedro.job_tracker.controller;
 
 import com.pedro.job_tracker.model.JobApplication;
 import com.pedro.job_tracker.repository.JobApplicationRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public JobApplication createJob(@RequestBody JobApplication job) {
+    public JobApplication createJob(@Valid @RequestBody JobApplication job) {
         return repository.save(job);
     }
 
@@ -32,9 +33,18 @@ public class JobApplicationController {
     }
 
     @PutMapping("/{id}")
-    public JobApplication updateJob(@PathVariable Long id, @RequestBody JobApplication updatedjob) {
+    public JobApplication updateJob(@PathVariable Long id, @Valid @RequestBody JobApplication updatedjob) {
         updatedjob.setId(id);
         return repository.save(updatedjob);
     }
 
+    @GetMapping("/status/{status}")
+    public List<JobApplication> getJobsById(@PathVariable String status) {
+        return repository.findByStatus(status);
+    }
+
+    @GetMapping("/company/{company}")
+    public List<JobApplication> getJobsByCompany(@PathVariable String company){
+        return repository.findByCompanyContainingIgnoreCase(company);
+    }
 }
